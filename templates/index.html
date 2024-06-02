@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECG</title>
+    <!--<link rel="stylesheet" href="css/bootstrap.min.css">-->
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-image: url('C:/Users/Utilisateur/Desktop/appPFE/m.jpg');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+
+        }
+    </style>
+    <script src="static/javascript/bootstrap.min.js"></script>
+    {{ bootstrap.load_css() }}
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <a class="navbar-brand" href="#">Medical Descision:ECG</a>
+        <link rel="stylesheet" href="{{ url_for('static', filename='static/css/bootstrap.min.css') }}">
+
+    </nav>
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Upload ECG Picture</h5>
+                        <form action="/verifier" method="POST" enctype="multipart/form-data" id="uploadForm">
+                            <div class="form-group">
+                                <input type="file" class="form-control-file" name="file" id="fileInput" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Verifier</button>
+                        </form>
+                        
+                        {% if success_message == "This is an ECG image." %}
+                        <form action="/result" method="POST" enctype="multipart/form-data" id="predictForm">
+                            <button type="submit" class="btn btn-success">Cropper</button>
+                        </form>
+                        {% endif %}
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3 justify-content-center">
+            <div class="col-md-6">
+                {% if success_message %}
+                <div class="alert alert-success" role="alert">
+                    {{ success_message }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function (event) {
+            var fileInput = document.getElementById('fileInput');
+            if (fileInput.files.length === 0) {
+                event.preventDefault(); // Prevent the form from submitting
+                showAlert('Please choose an image');
+            }
+        });
+        document.getElementById('predictButton').addEventListener('click', function () {
+            document.getElementById('uploadForm').submit();
+        });
+        function showAlert(message) {
+            var alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-danger';
+            alertDiv.role = 'alert';
+            alertDiv.textContent = message;
+
+            var cardBody = document.querySelector('.card-body');
+            cardBody.insertBefore(alertDiv, cardBody.firstChild);
+
+            setTimeout(function () {
+                cardBody.removeChild(alertDiv);
+            }, 3000);
+        }
+    </script>
+</body>
+
+</html>
